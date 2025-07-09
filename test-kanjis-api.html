@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Kanjis - Probador</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        .endpoint-info {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #2c3e50;
+        }
+        button {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        .delete-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        .delete-btn:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .response {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stats-section {
+            grid-column: 1 / -1;
+            background: linear-gradient(45deg, #8e44ad, #9b59b6);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .kanji-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .quick-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🈲 API de Kanjis</h1>
+        <p class="subtitle">
+            Explora y aprende kanjis japoneses con nuestra API completa<br>
+            <strong>Base URL:</strong> http://localhost:4000/api/kanjis
+        </p>
+
+        <div class="stats-section">
+            <h2>📊 Estadísticas de Kanjis</h2>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="obtenerEstadisticas()">Ver Estadísticas</button>
+                <button class="quick-btn" onclick="obtenerKanjisAleatorios()">Kanjis Aleatorios</button>
+                <button class="quick-btn" onclick="obtenerKanjisPorFrecuencia()">Por Frecuencia</button>
+            </div>
+            <div id="stats-display" class="response" style="display:none; color: #ecf0f1;"></div>
+        </div>
+
+        <div class="grid">
+            <!-- Obtener todos los kanjis -->
+            <div class="section">
+                <h2>📋 Obtener Todos los Kanjis</h2>
+                <div class="endpoint-info">GET /api/kanjis</div>
+                <button onclick="obtenerTodosLosKanjis()">Obtener Kanjis</button>
+                <div id="response-todos" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Obtener kanji por ID -->
+            <div class="section">
+                <h2>🔍 Obtener Kanji por ID</h2>
+                <div class="endpoint-info">GET /api/kanjis/{id}</div>
+                <div class="form-group">
+                    <label>ID del Kanji:</label>
+                    <input type="number" id="kanjiId" placeholder="Ej: 1" value="1">
+                </div>
+                <button onclick="obtenerKanjiPorId()">Obtener Kanji</button>
+                <div id="response-kanji" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Buscar por carácter -->
+            <div class="section">
+                <h2>🈯 Buscar por Carácter</h2>
+                <div class="endpoint-info">GET /api/kanjis/caracter/{kanji}</div>
+                <div class="form-group">
+                    <label>Carácter Kanji:</label>
+                    <input type="text" id="kanjiCaracter" placeholder="Ej: 水" value="水" maxlength="1">
+                </div>
+                <button onclick="buscarPorCaracter()">Buscar Kanji</button>
+                <div id="response-caracter" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Buscar por significado -->
+            <div class="section">
+                <h2>💭 Buscar por Significado</h2>
+                <div class="endpoint-info">GET /api/kanjis/buscar/significado?q={significado}</div>
+                <div class="form-group">
+                    <label>Significado:</label>
+                    <input type="text" id="significado" placeholder="Ej: agua" value="agua">
+                </div>
+                <button onclick="buscarPorSignificado()">Buscar</button>
+                <div id="response-significado" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Buscar por lectura kun -->
+            <div class="section">
+                <h2>🔤 Buscar por Lectura Kun</h2>
+                <div class="endpoint-info">GET /api/kanjis/buscar/kun?q={lectura}</div>
+                <div class="form-group">
+                    <label>Lectura Kun:</label>
+                    <input type="text" id="lecturaKun" placeholder="Ej: みず" value="みず">
+                </div>
+                <button onclick="buscarPorLecturaKun()">Buscar</button>
+                <div id="response-kun" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Buscar por lectura on -->
+            <div class="section">
+                <h2>🔠 Buscar por Lectura On</h2>
+                <div class="endpoint-info">GET /api/kanjis/buscar/on?q={lectura}</div>
+                <div class="form-group">
+                    <label>Lectura On:</label>
+                    <input type="text" id="lecturaOn" placeholder="Ej: スイ" value="スイ">
+                </div>
+                <button onclick="buscarPorLecturaOn()">Buscar</button>
+                <div id="response-on" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Buscar por nivel JLPT -->
+            <div class="section">
+                <h2>📚 Buscar por Nivel JLPT</h2>
+                <div class="endpoint-info">GET /api/kanjis/jlpt/{nivel}</div>
+                <div class="form-group">
+                    <label>Nivel JLPT:</label>
+                    <select id="nivelJlpt">
+                        <option value="N5">N5 (Principiante)</option>
+                        <option value="N4">N4 (Básico)</option>
+                        <option value="N3">N3 (Intermedio)</option>
+                        <option value="N2">N2 (Avanzado)</option>
+                        <option value="N1">N1 (Experto)</option>
+                    </select>
+                </div>
+                <button onclick="buscarPorNivelJlpt()">Buscar</button>
+                <div id="response-jlpt" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Buscar por grado escolar -->
+            <div class="section">
+                <h2>🏫 Buscar por Grado Escolar</h2>
+                <div class="endpoint-info">GET /api/kanjis/grado/{grado}</div>
+                <div class="form-group">
+                    <label>Grado Escolar:</label>
+                    <select id="gradoEscolar">
+                        <option value="1">1º grado</option>
+                        <option value="2">2º grado</option>
+                        <option value="3">3º grado</option>
+                        <option value="4">4º grado</option>
+                        <option value="5">5º grado</option>
+                        <option value="6">6º grado</option>
+                    </select>
+                </div>
+                <button onclick="buscarPorGradoEscolar()">Buscar</button>
+                <div id="response-grado" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Buscar por número de trazos -->
+            <div class="section">
+                <h2>✏️ Buscar por Número de Trazos</h2>
+                <div class="endpoint-info">GET /api/kanjis/trazos/{numero}</div>
+                <div class="form-group">
+                    <label>Número de Trazos:</label>
+                    <input type="number" id="numeroTrazos" placeholder="Ej: 4" value="4" min="1" max="30">
+                </div>
+                <button onclick="buscarPorNumeroTrazos()">Buscar</button>
+                <div id="response-trazos" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Buscar por rango de trazos -->
+            <div class="section">
+                <h2>📐 Buscar por Rango de Trazos</h2>
+                <div class="endpoint-info">GET /api/kanjis/trazos/rango?min={min}&max={max}</div>
+                <div class="form-group">
+                    <label>Trazos mínimos:</label>
+                    <input type="number" id="trazosMin" placeholder="Ej: 1" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Trazos máximos:</label>
+                    <input type="number" id="trazosMax" placeholder="Ej: 5" value="5" min="1">
+                </div>
+                <button onclick="buscarPorRangoTrazos()">Buscar</button>
+                <div id="response-rango" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Búsqueda avanzada -->
+            <div class="section">
+                <h2>🔍 Búsqueda Avanzada</h2>
+                <div class="endpoint-info">GET /api/kanjis/buscar/avanzado?significado={sig}&jlpt={jlpt}&grado={grado}</div>
+                <div class="form-group">
+                    <label>Significado (opcional):</label>
+                    <input type="text" id="avanzadoSignificado" placeholder="Ej: agua">
+                </div>
+                <div class="form-group">
+                    <label>Nivel JLPT (opcional):</label>
+                    <select id="avanzadoJlpt">
+                        <option value="">Cualquiera</option>
+                        <option value="N5">N5</option>
+                        <option value="N4">N4</option>
+                        <option value="N3">N3</option>
+                        <option value="N2">N2</option>
+                        <option value="N1">N1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Grado Escolar (opcional):</label>
+                    <select id="avanzadoGrado">
+                        <option value="">Cualquiera</option>
+                        <option value="1">1º grado</option>
+                        <option value="2">2º grado</option>
+                        <option value="3">3º grado</option>
+                        <option value="4">4º grado</option>
+                        <option value="5">5º grado</option>
+                        <option value="6">6º grado</option>
+                    </select>
+                </div>
+                <button onclick="busquedaAvanzada()">Buscar</button>
+                <div id="response-avanzado" class="response" style="display:none;"></div>
+            </div>
+
+            <!-- Crear kanji -->
+            <div class="section">
+                <h2>➕ Crear Nuevo Kanji</h2>
+                <div class="endpoint-info">POST /api/kanjis</div>
+                <div class="form-group">
+                    <label>Kanji:</label>
+                    <input type="text" id="nuevoKanji" placeholder="Ej: 愛" maxlength="1">
+                </div>
+                <div class="form-group">
+                    <label>Lectura Kun:</label>
+                    <input type="text" id="nuevoKun" placeholder="Ej: あい">
+                </div>
+                <div class="form-group">
+                    <label>Lectura On:</label>
+                    <input type="text" id="nuevoOn" placeholder="Ej: アイ">
+                </div>
+                <div class="form-group">
+                    <label>Significado:</label>
+                    <input type="text" id="nuevoSignificado" placeholder="Ej: amor">
+                </div>
+                <div class="form-group">
+                    <label>Número de Trazos:</label>
+                    <input type="number" id="nuevoTrazos" placeholder="Ej: 13" min="1">
+                </div>
+                <button onclick="crearKanji()">Crear Kanji</button>
+                <div id="response-crear" class="response" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:4000/api/kanjis';
+
+        function mostrarRespuesta(elementId, data) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        function mostrarError(elementId, error) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = `❌ Error: ${error.message}`;
+        }
+
+        async function obtenerTodosLosKanjis() {
+            try {
+                const response = await fetch(BASE_URL);
+                const data = await response.json();
+                mostrarRespuesta('response-todos', data);
+            } catch (error) {
+                mostrarError('response-todos', error);
+            }
+        }
+
+        async function obtenerKanjiPorId() {
+            const id = document.getElementById('kanjiId').value;
+            try {
+                const response = await fetch(`${BASE_URL}/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    mostrarRespuesta('response-kanji', data);
+                } else {
+                    throw new Error(`HTTP ${response.status}: Kanji no encontrado`);
+                }
+            } catch (error) {
+                mostrarError('response-kanji', error);
+            }
+        }
+
+        async function buscarPorCaracter() {
+            const kanji = document.getElementById('kanjiCaracter').value;
+            try {
+                const response = await fetch(`${BASE_URL}/caracter/${encodeURIComponent(kanji)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    mostrarRespuesta('response-caracter', data);
+                } else {
+                    throw new Error(`HTTP ${response.status}: Kanji no encontrado`);
+                }
+            } catch (error) {
+                mostrarError('response-caracter', error);
+            }
+        }
+
+        async function buscarPorSignificado() {
+            const significado = document.getElementById('significado').value;
+            try {
+                const response = await fetch(`${BASE_URL}/buscar/significado?q=${encodeURIComponent(significado)}`);
+                const data = await response.json();
+                mostrarRespuesta('response-significado', data);
+            } catch (error) {
+                mostrarError('response-significado', error);
+            }
+        }
+
+        async function buscarPorLecturaKun() {
+            const kun = document.getElementById('lecturaKun').value;
+            try {
+                const response = await fetch(`${BASE_URL}/buscar/kun?q=${encodeURIComponent(kun)}`);
+                const data = await response.json();
+                mostrarRespuesta('response-kun', data);
+            } catch (error) {
+                mostrarError('response-kun', error);
+            }
+        }
+
+        async function buscarPorLecturaOn() {
+            const on = document.getElementById('lecturaOn').value;
+            try {
+                const response = await fetch(`${BASE_URL}/buscar/on?q=${encodeURIComponent(on)}`);
+                const data = await response.json();
+                mostrarRespuesta('response-on', data);
+            } catch (error) {
+                mostrarError('response-on', error);
+            }
+        }
+
+        async function buscarPorNivelJlpt() {
+            const nivel = document.getElementById('nivelJlpt').value;
+            try {
+                const response = await fetch(`${BASE_URL}/jlpt/${nivel}`);
+                const data = await response.json();
+                mostrarRespuesta('response-jlpt', data);
+            } catch (error) {
+                mostrarError('response-jlpt', error);
+            }
+        }
+
+        async function buscarPorGradoEscolar() {
+            const grado = document.getElementById('gradoEscolar').value;
+            try {
+                const response = await fetch(`${BASE_URL}/grado/${grado}`);
+                const data = await response.json();
+                mostrarRespuesta('response-grado', data);
+            } catch (error) {
+                mostrarError('response-grado', error);
+            }
+        }
+
+        async function buscarPorNumeroTrazos() {
+            const trazos = document.getElementById('numeroTrazos').value;
+            try {
+                const response = await fetch(`${BASE_URL}/trazos/${trazos}`);
+                const data = await response.json();
+                mostrarRespuesta('response-trazos', data);
+            } catch (error) {
+                mostrarError('response-trazos', error);
+            }
+        }
+
+        async function buscarPorRangoTrazos() {
+            const min = document.getElementById('trazosMin').value;
+            const max = document.getElementById('trazosMax').value;
+            try {
+                const response = await fetch(`${BASE_URL}/trazos/rango?min=${min}&max=${max}`);
+                const data = await response.json();
+                mostrarRespuesta('response-rango', data);
+            } catch (error) {
+                mostrarError('response-rango', error);
+            }
+        }
+
+        async function busquedaAvanzada() {
+            const params = new URLSearchParams();
+            
+            const significado = document.getElementById('avanzadoSignificado').value;
+            const jlpt = document.getElementById('avanzadoJlpt').value;
+            const grado = document.getElementById('avanzadoGrado').value;
+            
+            if (significado) params.append('significado', significado);
+            if (jlpt) params.append('jlpt', jlpt);
+            if (grado) params.append('grado', grado);
+            
+            try {
+                const response = await fetch(`${BASE_URL}/buscar/avanzado?${params}`);
+                const data = await response.json();
+                mostrarRespuesta('response-avanzado', data);
+            } catch (error) {
+                mostrarError('response-avanzado', error);
+            }
+        }
+
+        async function crearKanji() {
+            const kanji = {
+                kanji: document.getElementById('nuevoKanji').value,
+                lecturaKun: document.getElementById('nuevoKun').value,
+                lecturaOn: document.getElementById('nuevoOn').value,
+                significadoEspanol: document.getElementById('nuevoSignificado').value,
+                numeroTrazos: parseInt(document.getElementById('nuevoTrazos').value)
+            };
+
+            try {
+                const response = await fetch(BASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(kanji)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    mostrarRespuesta('response-crear', data);
+                    // Limpiar formulario
+                    document.getElementById('nuevoKanji').value = '';
+                    document.getElementById('nuevoKun').value = '';
+                    document.getElementById('nuevoOn').value = '';
+                    document.getElementById('nuevoSignificado').value = '';
+                    document.getElementById('nuevoTrazos').value = '';
+                } else {
+                    throw new Error(`HTTP ${response.status}: Error al crear kanji`);
+                }
+            } catch (error) {
+                mostrarError('response-crear', error);
+            }
+        }
+
+        async function obtenerEstadisticas() {
+            try {
+                const response = await fetch(`${BASE_URL}/estadisticas`);
+                const data = await response.json();
+                mostrarRespuesta('stats-display', data);
+            } catch (error) {
+                mostrarError('stats-display', error);
+            }
+        }
+
+        async function obtenerKanjisAleatorios() {
+            try {
+                const response = await fetch(`${BASE_URL}/aleatorios?limite=5`);
+                const data = await response.json();
+                mostrarRespuesta('stats-display', data);
+            } catch (error) {
+                mostrarError('stats-display', error);
+            }
+        }
+
+        async function obtenerKanjisPorFrecuencia() {
+            try {
+                const response = await fetch(`${BASE_URL}/frecuencia`);
+                const data = await response.json();
+                mostrarRespuesta('stats-display', data);
+            } catch (error) {
+                mostrarError('stats-display', error);
+            }
+        }
+
+        // Cargar estadísticas al inicio
+        document.addEventListener('DOMContentLoaded', function() {
+            obtenerEstadisticas();
+        });
+    </script>
+</body>
+</html>
