@@ -1,20 +1,23 @@
 package com.rubenvj.springboot.kanjis.kanjis_springboot.config;
 
 import com.rubenvj.springboot.kanjis.kanjis_springboot.entities.Kanji;
-import com.rubenvj.springboot.kanjis.kanjis_springboot.repositories.KanjiRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.rubenvj.springboot.kanjis.kanjis_springboot.domain.repositories.KanjiRepositoryInterface;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 /**
  * Configuración para cargar datos iniciales en la base de datos
  * Se ejecuta automáticamente al iniciar la aplicación
+ * Refactorizado para usar Clean Architecture
  */
 @Component
 public class DataInitializer implements CommandLineRunner {
     
-    @Autowired
-    private KanjiRepository kanjiRepository;
+    private final KanjiRepositoryInterface kanjiRepository;
+    
+    public DataInitializer(KanjiRepositoryInterface kanjiRepository) {
+        this.kanjiRepository = kanjiRepository;
+    }
     
     @Override
     public void run(String... args) throws Exception {
