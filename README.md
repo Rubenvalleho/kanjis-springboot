@@ -313,7 +313,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 **Ruben VJ**
 - GitHub: [@rubenvj](https://github.com/rubenvj)
-- Email: ruben@example.com
+- Email: ruben.vallejo.jara@gmail.com
 
 ---
 
