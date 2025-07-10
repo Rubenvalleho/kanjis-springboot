@@ -312,7 +312,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 ## 👥 Autor
 
 **Ruben VJ**
-- GitHub: [@rubenvj](https://github.com/rubenvj)
+- GitHub: [@rubenvalleho](https://github.com/Rubenvalleho)
 - Email: ruben.vallejo.jara@gmail.com
 
 ---
