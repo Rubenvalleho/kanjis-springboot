@@ -3,25 +3,20 @@ package com.rubenvj.springboot.kanjis.kanjis_springboot.config;
 import com.rubenvj.springboot.kanjis.kanjis_springboot.entities.Kanji;
 import com.rubenvj.springboot.kanjis.kanjis_springboot.domain.repositories.KanjiRepositoryInterface;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-/**
- * Configuración para cargar datos iniciales en la base de datos
- * Se ejecuta automáticamente al iniciar la aplicación
- * Refactorizado para usar Clean Architecture
- */
 @Component
 public class DataInitializer implements CommandLineRunner {
     
     private final KanjiRepositoryInterface kanjiRepository;
     
-    public DataInitializer(KanjiRepositoryInterface kanjiRepository) {
+    public DataInitializer(@Lazy KanjiRepositoryInterface kanjiRepository) {
         this.kanjiRepository = kanjiRepository;
     }
     
     @Override
     public void run(String... args) throws Exception {
-        // Cargar kanjis si la tabla está vacía
         if (kanjiRepository.count() == 0) {
             cargarKanjisIniciales();
         }
@@ -30,7 +25,6 @@ public class DataInitializer implements CommandLineRunner {
     private void cargarKanjisIniciales() {
         System.out.println("\n🈲 Cargando kanjis iniciales...");
         
-        // Kanjis básicos N5 - Nivel 1
         Kanji kanji1 = new Kanji("水", "みず", "スイ", "agua");
         kanji1.setNumeroTrazos(4);
         kanji1.setNivelJlpt("N5");
@@ -111,7 +105,6 @@ public class DataInitializer implements CommandLineRunner {
         kanji10.setEjemplosPalabras("小さい (ちいさい) - pequeño, 小学校 (しょうがっこう) - escuela primaria");
         kanji10.setRadicalPrincipal("小");
         
-        // Kanjis N4 - Nivel 2
         Kanji kanji11 = new Kanji("食", "た", "ショク", "comer, comida");
         kanji11.setNumeroTrazos(9);
         kanji11.setNivelJlpt("N4");
@@ -152,7 +145,6 @@ public class DataInitializer implements CommandLineRunner {
         kanji15.setEjemplosPalabras("家 (いえ) - casa, 家族 (かぞく) - familia");
         kanji15.setRadicalPrincipal("宀");
         
-        // Kanjis N3 - Nivel 3
         Kanji kanji16 = new Kanji("病", "やまい", "ビョウ", "enfermedad");
         kanji16.setNumeroTrazos(10);
         kanji16.setNivelJlpt("N3");
@@ -193,7 +185,6 @@ public class DataInitializer implements CommandLineRunner {
         kanji20.setEjemplosPalabras("色 (いろ) - color, 黒色 (こくしょく) - negro");
         kanji20.setRadicalPrincipal("色");
         
-        // Guardar todos los kanjis
         kanjiRepository.save(kanji1);
         kanjiRepository.save(kanji2);
         kanjiRepository.save(kanji3);
@@ -218,7 +209,6 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("✅ Kanjis iniciales cargados correctamente");
         System.out.println("📊 Total de kanjis creados: " + kanjiRepository.count());
         
-        // Mostrar estadísticas por nivel
         System.out.println("📈 Estadísticas por nivel JLPT:");
         System.out.println("   • N5: " + kanjiRepository.countByNivelJlpt("N5") + " kanjis");
         System.out.println("   • N4: " + kanjiRepository.countByNivelJlpt("N4") + " kanjis");

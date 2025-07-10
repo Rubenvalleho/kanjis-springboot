@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Controlador REST para Kanji - Define los endpoints de la API de kanjis
- * Refactorizado para usar Clean Architecture con casos de uso
- */
 @RestController
 @RequestMapping("/api/kanjis")
 @CrossOrigin(origins = "*")
@@ -78,9 +74,6 @@ public class KanjiController {
         this.getKanjiStatisticsUseCase = getKanjiStatisticsUseCase;
     }
     
-    /**
-     * GET /api/kanjis - Obtiene todos los kanjis
-     */
     @GetMapping
     public ResponseEntity<List<Kanji>> obtenerTodosLosKanjis() {
         try {
@@ -91,9 +84,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/{id} - Obtiene un kanji por ID
-     */
     @GetMapping("/{id}")
     public ResponseEntity<Kanji> obtenerKanjiPorId(@PathVariable Long id) {
         try {
@@ -108,9 +98,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/caracter/{kanji} - Obtiene un kanji por su carácter
-     */
     @GetMapping("/caracter/{kanji}")
     public ResponseEntity<Kanji> obtenerKanjiPorCaracter(@PathVariable String kanji) {
         try {
@@ -125,9 +112,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * POST /api/kanjis - Crea un nuevo kanji
-     */
     @PostMapping
     public ResponseEntity<Kanji> crearKanji(@RequestBody Kanji kanji) {
         try {
@@ -140,9 +124,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * PUT /api/kanjis/{id} - Actualiza un kanji existente
-     */
     @PutMapping("/{id}")
     public ResponseEntity<Kanji> actualizarKanji(@PathVariable Long id, @RequestBody Kanji kanji) {
         try {
@@ -155,9 +136,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * DELETE /api/kanjis/{id} - Elimina un kanji
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarKanji(@PathVariable Long id) {
         try {
@@ -170,9 +148,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/buscar/significado?q=agua - Busca kanjis por significado
-     */
     @GetMapping("/buscar/significado")
     public ResponseEntity<List<Kanji>> buscarPorSignificado(@RequestParam String q) {
         try {
@@ -183,9 +158,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/buscar/kun?q=mizu - Busca kanjis por lectura kun
-     */
     @GetMapping("/buscar/kun")
     public ResponseEntity<List<Kanji>> buscarPorLecturaKun(@RequestParam String q) {
         try {
@@ -196,9 +168,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/buscar/on?q=sui - Busca kanjis por lectura on
-     */
     @GetMapping("/buscar/on")
     public ResponseEntity<List<Kanji>> buscarPorLecturaOn(@RequestParam String q) {
         try {
@@ -209,9 +178,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/jlpt/{nivel} - Busca kanjis por nivel JLPT
-     */
     @GetMapping("/jlpt/{nivel}")
     public ResponseEntity<List<Kanji>> buscarPorNivelJlpt(@PathVariable String nivel) {
         try {
@@ -222,9 +188,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/grado/{grado} - Busca kanjis por grado escolar
-     */
     @GetMapping("/grado/{grado}")
     public ResponseEntity<List<Kanji>> buscarPorGradoEscolar(@PathVariable Integer grado) {
         try {
@@ -235,9 +198,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/trazos/{numero} - Busca kanjis por número de trazos
-     */
     @GetMapping("/trazos/{numero}")
     public ResponseEntity<List<Kanji>> buscarPorNumeroTrazos(@PathVariable Integer numero) {
         try {
@@ -248,9 +208,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/trazos/rango?min=1&max=5 - Busca kanjis por rango de trazos
-     */
     @GetMapping("/trazos/rango")
     public ResponseEntity<List<Kanji>> buscarPorRangoTrazos(@RequestParam Integer min, @RequestParam Integer max) {
         try {
@@ -261,9 +218,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/radical/{radical} - Busca kanjis por radical
-     */
     @GetMapping("/radical/{radical}")
     public ResponseEntity<List<Kanji>> buscarPorRadical(@PathVariable String radical) {
         try {
@@ -274,9 +228,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/frecuencia - Obtiene kanjis ordenados por frecuencia de uso
-     */
     @GetMapping("/frecuencia")
     public ResponseEntity<List<Kanji>> obtenerKanjisPorFrecuencia() {
         try {
@@ -287,9 +238,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/aleatorios?limite=10 - Obtiene kanjis aleatorios para práctica
-     */
     @GetMapping("/aleatorios")
     public ResponseEntity<List<Kanji>> obtenerKanjisAleatorios(@RequestParam(defaultValue = "10") Integer limite) {
         try {
@@ -300,9 +248,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/buscar/avanzado?significado=agua&jlpt=N5&grado=1 - Búsqueda avanzada
-     */
     @GetMapping("/buscar/avanzado")
     public ResponseEntity<List<Kanji>> buscarPorCriterios(
             @RequestParam(required = false) String significado,
@@ -316,9 +261,6 @@ public class KanjiController {
         }
     }
     
-    /**
-     * GET /api/kanjis/estadisticas - Obtiene estadísticas generales
-     */
     @GetMapping("/estadisticas")
     public ResponseEntity<Map<String, Object>> obtenerEstadisticas() {
         try {

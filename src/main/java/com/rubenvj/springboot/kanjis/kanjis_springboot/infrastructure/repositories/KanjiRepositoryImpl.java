@@ -3,16 +3,12 @@ package com.rubenvj.springboot.kanjis.kanjis_springboot.infrastructure.repositor
 import com.rubenvj.springboot.kanjis.kanjis_springboot.domain.repositories.KanjiRepositoryInterface;
 import com.rubenvj.springboot.kanjis.kanjis_springboot.entities.Kanji;
 import com.rubenvj.springboot.kanjis.kanjis_springboot.repositories.KanjiRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Implementación del repositorio de Kanji usando JPA
- * Actúa como adaptador entre la capa de dominio y la infraestructura
- */
-@Component
+@Service
 public class KanjiRepositoryImpl implements KanjiRepositoryInterface {
     
     private final KanjiRepository jpaKanjiRepository;
